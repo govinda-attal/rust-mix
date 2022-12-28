@@ -6,16 +6,14 @@ pub fn is_valid(input: &str) -> bool {
             '{' => stack.push('}'),
             '(' => stack.push(')'),
             '[' => stack.push(']'),
-            '}'|')'|']' => {
+            '}' | ')' | ']' => {
                 let popped = stack.pop().unwrap_or_default();
-               
+
                 if popped != ch {
                     return false;
                 }
-            },
-            _ => {
-                return false
             }
+            _ => return false,
         }
     }
     true
