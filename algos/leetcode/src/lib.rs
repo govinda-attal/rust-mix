@@ -7,4 +7,5 @@ pub mod lc_226_invert_tree_node;
 pub mod lc_232_queue_using_stacks;
 pub mod lc_278_first_bad_version;
 pub mod lc_382_ransom_note;
+pub mod lc_409_longest_palindrome;
 pub mod lc_733_image_flood_fill;
