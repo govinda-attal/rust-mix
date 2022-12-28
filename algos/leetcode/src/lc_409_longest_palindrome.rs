@@ -5,7 +5,7 @@ impl Solution {
         use std::collections::HashMap;
 
         let mut hm = HashMap::new();
-        for ch  in s.chars() {
+        for ch in s.chars() {
             *hm.entry(ch).or_insert(0) += 1;
         }
 
@@ -20,7 +20,7 @@ impl Solution {
             }
         }
 
-        max_len + if has_odd {1} else {0}
+        max_len + if has_odd { 1 } else { 0 }
     }
 }
 

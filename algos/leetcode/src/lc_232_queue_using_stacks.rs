@@ -4,8 +4,11 @@ pub struct MyQueue {
 }
 
 impl MyQueue {
-    pub fn new()-> Self {
-        MyQueue { stack1: vec![], stack2: vec![] }
+    pub fn new() -> Self {
+        MyQueue {
+            stack1: vec![],
+            stack2: vec![],
+        }
     }
 
     pub fn push(&mut self, x: i32) {
@@ -15,7 +18,7 @@ impl MyQueue {
         self.stack1.push(x);
         while let Some(v) = self.stack2.pop() {
             self.stack1.push(v)
-        } 
+        }
     }
 
     pub fn peek(&self) -> i32 {
@@ -28,7 +31,6 @@ impl MyQueue {
         self.stack1.is_empty()
     }
 }
-
 
 #[cfg(test)]
 mod test {
@@ -44,6 +46,5 @@ mod test {
         assert!(!queue.empty());
         assert_eq!(queue.pop(), 2);
         assert!(queue.empty());
-
     }
 }

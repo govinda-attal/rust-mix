@@ -46,7 +46,7 @@ mod test {
 
     #[test]
     fn test_un_balanced_one() {
-        let tree = TreeNode::from_vec(&vec![1, 2, 2, 3,3, i32::MIN, i32::MIN, i32::MIN, 4, 4]);
+        let tree = TreeNode::from_vec(&vec![1, 2, 2, 3, 3, i32::MIN, i32::MIN, i32::MIN, 4, 4]);
         let sol = Solution::new();
         assert!(!sol.is_balanced(tree))
     }
