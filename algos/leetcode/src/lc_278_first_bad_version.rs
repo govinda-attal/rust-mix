@@ -4,9 +4,7 @@ struct Solution {
 
 impl Solution {
     pub fn new(bv: i32) -> Self {
-        Self {
-            bad_version: bv,
-        }
+        Self { bad_version: bv }
     }
 
     fn is_bad_version(&self, v: i32) -> bool {
@@ -17,20 +15,20 @@ impl Solution {
         let mut good = 1;
         let mut bad = n;
         loop {
-            let mid = (bad + good)/ 2;
+            let mid = (bad + good) / 2;
             if self.is_bad_version(mid) {
                 bad = mid
             } else {
                 good = mid
             }
             if good + 1 == bad {
-                return bad
+                return bad;
             }
             if good == bad {
-                return bad
+                return bad;
             }
         }
-    } 
+    }
 }
 
 #[cfg(test)]

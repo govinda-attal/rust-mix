@@ -3,11 +3,12 @@ use std::fmt::{Display, Formatter};
 use std::cell::RefCell;
 use std::rc::Rc;
 
+pub type Tree = Option<Rc<RefCell<TreeNode>>>;
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
     pub val: i32,
-    pub left: Option<Rc<RefCell<TreeNode>>>,
-    pub right: Option<Rc<RefCell<TreeNode>>>,
+    pub left: Tree,
+    pub right: Tree,
 }
 
 impl TreeNode {
@@ -20,7 +21,7 @@ impl TreeNode {
         }
     }
 
-    pub fn from_vec(vals: &[i32]) -> Option<Rc<RefCell<TreeNode>>> {
+    pub fn from_vec(vals: &[i32]) -> Tree {
         if vals.is_empty() {
             return None;
         }
