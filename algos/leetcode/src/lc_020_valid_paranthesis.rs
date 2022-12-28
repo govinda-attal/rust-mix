@@ -20,7 +20,7 @@ pub fn is_valid(input: &str) -> bool {
 }
 
 #[cfg(test)]
-pub mod test {
+mod test {
     use super::*;
 
     #[test]
