@@ -1,6 +1,6 @@
 [workspace]
 
 members=[
-    "algos/leetcode","check",
+    "algos/leetcode",
     "open/blockchain"
 ]
