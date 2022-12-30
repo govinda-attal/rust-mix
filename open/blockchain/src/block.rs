@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 use std::fmt::{self, Debug, Formatter};
 
 use crate::hashable::Hashable;
@@ -6,27 +6,40 @@ use crate::hashable::Hashable;
 pub struct Block {
     pub index: u32,
     pub timestamp: u128,
-    pub prev_block_hash: BlockHash,
-    pub hash: BlockHash,
-    pub nounce: u64,
-    pub payload: String,
+    pub prev_block_hash: Hash,
+    pub hash: Hash,
+    pub nonce: u64,
+    pub transactions: Vec<Transaction>,
+    pub difficulty: u128,
 }
 
 impl Block {
     pub fn new(
         index: u32,
         timestamp: u128,
-        prev_block_hash: BlockHash,
-        nounce: u64,
-        payload: String,
+        prev_block_hash: Hash,
+        transactions: Vec<Transaction>,
+        difficulty: u128,
     ) -> Self {
         Self {
             index,
             timestamp,
             prev_block_hash,
             hash: vec![0; 32],
-            nounce,
-            payload,
+            nonce: 0,
+            transactions,
+            difficulty,
+        }
+    }
+
+    pub fn mine(&mut self) {
+        for nonce_attempt in 0..u64::MAX {
+            self.nonce = nonce_attempt;
+            let hash = self.hash();
+            if check_difficulty(&hash, self.difficulty) {
+                self.hash = hash;
+                return;
+            }
         }
     }
 }
@@ -39,7 +52,7 @@ impl Debug for Block {
             &self.index,
             &hex::encode(&self.hash),
             &self.timestamp,
-            &self.payload
+            &self.transactions.len()
         )
     }
 }
@@ -51,11 +64,19 @@ impl Hashable for Block {
         bytes.extend(&u32_bytes(&self.index));
         bytes.extend(&u128_bytes(&self.timestamp));
         bytes.extend(&self.prev_block_hash);
-        bytes.extend(&u64_bytes(&self.nounce));
-        bytes.extend(self.payload.as_bytes());
+        bytes.extend(&u64_bytes(&self.nonce));
+        bytes.extend(
+            self.transactions
+                .iter()
+                .flat_map(|tran| tran.bytes())
+                .collect::<Vec<u8>>(),
+        );
+        bytes.extend(&u128_bytes(&self.difficulty));
 
         bytes
     }
 }
 
-impl Block {}
+pub fn check_difficulty(hash: &Hash, difficulty: u128) -> bool {
+    difficulty > difficulty_bytes_as_u128(hash)
+}
