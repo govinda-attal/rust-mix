@@ -1,21 +1,32 @@
-use std::{fmt::Debug, time::Duration};
+use std::{fmt::Debug, marker::PhantomData, time::Duration};
 
 use crate::{Message, MessageSender, SenderError};
 use rdkafka::{
     config::ClientConfig,
     error::KafkaError,
+    message::OwnedMessage,
     producer::{FutureProducer, FutureRecord},
-    util::Timeout, message::OwnedMessage,
+    util::Timeout,
 };
-use serde::{Serialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Serialize};
 
-pub struct KafkaMessageSender {
+pub struct KafkaMessageSender<K, P>
+where
+    K: Serialize + DeserializeOwned + Debug,
+    P: Serialize + DeserializeOwned + Debug,
+{
     timeout: Timeout,
     topic: String,
     producer: FutureProducer,
+    phantom_key: PhantomData<K>,
+    phantom_payload: PhantomData<P>,
 }
 
-impl KafkaMessageSender {
+impl<K, P> KafkaMessageSender<K, P>
+where
+    K: Serialize + DeserializeOwned + Debug,
+    P: Serialize + DeserializeOwned + Debug,
+{
     pub fn new(brokers: &str, topic: &str) -> Result<Self, SenderError> {
         let producer: FutureProducer = ClientConfig::new()
             .set("bootstrap.servers", brokers)
@@ -25,15 +36,20 @@ impl KafkaMessageSender {
             producer,
             topic: topic.to_string(),
             timeout: Timeout::After(Duration::from_secs(5)),
+            phantom_key: PhantomData,
+            phantom_payload: PhantomData,
         })
     }
 }
 
-impl MessageSender for KafkaMessageSender {
-    async fn send_message<K: Serialize + DeserializeOwned + Debug, P: Serialize + DeserializeOwned + Debug>(
-        &self,
-        msg: Message<K, P>,
-    ) -> Result<(), SenderError> {
+impl<K, P> MessageSender<K, P> for KafkaMessageSender<K, P>
+where
+    K: Serialize + DeserializeOwned + Debug,
+    P: Serialize + DeserializeOwned + Debug,
+{
+    type K = K;
+    type P = P;
+    async fn send_message(&self, msg: Message<Self::K, Self::P>) -> Result<(), SenderError> {
         let payload = serde_json::to_string(&msg.payload)?;
         let key: String;
 
@@ -47,7 +63,7 @@ impl MessageSender for KafkaMessageSender {
 
         let producer = self.producer.clone();
         _ = producer.send(record, timeout).await?;
-            
+
         Ok(())
     }
 }
@@ -87,11 +103,11 @@ mod tests {
             println!("{:?}", e)
         }
 
+        let sender = KafkaMessageSender::new("localhost:9092", "topic-b").unwrap();
         let payload = MyPayload {
             content: "world".to_string(),
         };
-        let msg: Message<String, MyPayload> = Message::new(payload);
-        
+        let msg: Message<Option<String>, MyPayload> = Message::new(payload);
 
         let res = sender.send_message(msg).await;
         if let Err(e) = res {
