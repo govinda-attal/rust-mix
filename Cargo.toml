@@ -2,5 +2,8 @@
 
 members=[
     "algos/leetcode",
-    "open/blockchain"
+    "open/blockchain",
+    "ds/messaging",
 ]
+
+#![feature(auto_trait)]
