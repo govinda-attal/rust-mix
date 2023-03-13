@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::{ListenerError, Message, MessageListener, MessageProcessor, FnProcessMessage};
+use crate::{FnProcessMessage, ListenerError, Message, MessageListener, MessageProcessor};
 
 // pub struct Listener<'a, K, P>
 pub struct Listener<K, P>
@@ -11,7 +11,7 @@ where
     P: Serialize + DeserializeOwned + Debug,
 {
     // processor: &'a dyn MessageProcessor<K = K, P = P>,
-    pub fn_process_message: FnProcessMessage<K,P>
+    pub fn_process_message: FnProcessMessage<K, P>,
 }
 
 // impl<K, P> MessageListener for Listener<'_, K, P>
@@ -39,8 +39,7 @@ where
     // pub fn new(processor: &'a dyn MessageProcessor<K = K, P = P>) -> Self {
     //     Self { processor }
     // }
-    pub fn new(fn_process_message: FnProcessMessage<K,P>) -> Self {
-
+    pub fn new(fn_process_message: FnProcessMessage<K, P>) -> Self {
         Self { fn_process_message }
     }
 }
@@ -50,7 +49,6 @@ mod tests {
     use crate::ProcessorError;
 
     use super::*;
-    
 
     #[derive(Debug)]
     pub struct MyMessageProcessor {}
@@ -73,13 +71,11 @@ mod tests {
 
     #[test]
     fn test1() {
-
-       
-        let process_message = |msg: Message<String, String>| -> Result<(), ProcessorError>  {
+        let process_message = |msg: Message<String, String>| -> Result<(), ProcessorError> {
             println!("Received message: {:?}", msg);
             Ok(())
         };
-        
+
         let l = Listener::new(process_message);
         let rs = l.start();
         match rs {

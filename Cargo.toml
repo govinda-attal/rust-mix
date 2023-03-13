@@ -2,6 +2,7 @@
 
 members=[
     "algos/leetcode",
+    "algos/exercies",
     "open/blockchain",
     "ds/messaging",
 ]
