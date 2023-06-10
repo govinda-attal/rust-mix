@@ -1,5 +1,6 @@
 pub mod utils;
 
+pub mod lc_001_two_sum;
 pub mod lc_020_valid_paranthesis;
 pub mod lc_021_merge_sorted_list;
 pub mod lc_070_climbing_stairs;

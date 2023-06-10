@@ -1,10 +1,8 @@
 {
-    "terminal.integrated.fontFamily": "'MesloLGL Nerd Font Mono', monospace",
     "terminal.integrated.fontWeight": "500",
     "editor.fontFamily": "'VictorMono Nerd Font Mono', Consolas, 'Courier New', monospace",
     "editor.fontWeight": "500",
     "editor.fontLigatures": true,
-    "netbeans.javaSupport.enabled": true,
     "[rust]": {
         "editor.inlayHints.enabled": "on",
     },
